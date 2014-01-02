@@ -5,6 +5,10 @@ to send emails with updates about new craigslist postings.
 '''
 
 my_email = 'kaminsky.michael@gmail.com'
+passes = "C:/Users/Michael/Desktop/passwords.txt"
+fileHandle = open ( passes, 'r' )
+password = fileHandle.read()
+
 
 import sys
 sys.path.append('C:/Users/Michael/Documents/Code_Projects/Craigslist_Scraper')
@@ -58,6 +62,6 @@ for index, row in cu_object.query_list.iterrows():
      #Send email to 
      for index2, row2 in to_emails.iterrows():
          to_email=row2['email']
-         cu_object.send_emails(email_message = email_message ,from_email = my_email ,to_email = to_email ,password = )
+         cu_object.send_emails(email_message = email_message ,from_email = my_email ,to_email = to_email ,password = password)
      
      
