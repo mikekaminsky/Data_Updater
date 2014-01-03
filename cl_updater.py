@@ -98,7 +98,7 @@ class cl_updater(object):
         #Add to raw history -- simply stacking all the results found with every search
         #################################
 
-        cl_info.to_csv(raw_search_history, mode = 'a',header=False, index=False)
+        cl_info.to_csv(raw_search_history, mode = 'a',header=True, index=False)
 
         #################################
         #Add to unique search history
@@ -134,7 +134,10 @@ class cl_updater(object):
         unique=sorted_unique.drop_duplicates(cols=keys,take_last=True)
 
         #Write unique history back to CSV
-        unique_total =concat([unique,other_unique],axis=0)
+        if os.path.isfile(unique_search_history):
+            unique_total = concat([unique,other_unique],axis=0)
+        else:
+            unique_total = unique
         unique_total.to_csv(unique_search_history,index=False)
         
 
@@ -234,7 +237,7 @@ class cl_updater(object):
         # the HTML message, is best and preferred.
         msg.attach(part1)
         self.email_message = msg.as_string()
-
+        self.todays_results = todays_results
 
     def send_emails(self,email_message,from_email,to_email,password):
         '''
