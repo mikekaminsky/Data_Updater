@@ -39,15 +39,25 @@ print (cu_object.email_list)
 '''
 
 for index, row in cu_object.query_list.iterrows():
-     location = row['location']
-     query = row['query']
+     city = row['city']
+     search_term = row['search_term']
+     area = row['area']
+     minprice = row['minprice']
+     maxprice = row['maxprice']
+     category = row['category']
+     pic = row['pic']
+     bedrooms = row['bedrooms']
+     title_strict = row['title_strict']
      query_id = row['ID']
      #print query_id, location, query
      
      #Run craigslist scraper app to get results from query
-     cs = cl_scraper(location=location,query=query)
+     cs = cl_scraper(search_term=search_term, city=city, area=area,  \
+            minprice=minprice, maxprice=maxprice, category=category, \
+            pic=pic, bedrooms=bedrooms)
+             
      cs.run_cl_query()
-     cs.extract_listings(title_strict=True)
+     cs.extract_listings(title_strict=title_strict)
      
      #print cs.craigslist_results.head()
      

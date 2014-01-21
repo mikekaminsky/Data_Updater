@@ -153,6 +153,7 @@ class cl_updater(object):
         ----------
         email_file : string
             -Matrix of query parameters
+            -Matrix of email and query IDs parameters
             -columns are ID, location and search term
         header : bool
             -assume that query_file has header for columns
@@ -242,7 +243,7 @@ class cl_updater(object):
         unique_total.to_csv(unique_search_history,index=False)
 
 
-    def build_emails(self,data_path,query,query_id):
+    def build_emails(self,data_path,search_term,query_id):
         '''
             Build email with the 'new' results from craigslist
 
@@ -311,9 +312,7 @@ class cl_updater(object):
 
             quote_query = '"%s"' % query
 
-
-            header2="""\
-            , sorted by date (most recent first) and price (low to high):</p>
+            header2=""", sorted by date (most recent first) and price (low to high):</p>
             <p>
             """
 
