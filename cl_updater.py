@@ -23,12 +23,113 @@ class cl_updater(object):
     def __init__(self):
         '''
         Initialize a new instance of cl_data_cleaner
-        
+    '''
+
+    def add_new_query(self, query_file, email_file,email, search_term,
+                      area="", minprice="", maxprice="", category="sss", \
+                      pic=False, bedrooms=""):
+
         '''
+
+       Add new query for emailing to database
+
+        Parameters
+        ----------
+        query_file : string
+        email_file : string
+        email : string
+            - Recipient email address
+        search_term: string
+            - e.g., "turntable", "'dog not included'"
+        city : string.
+            - City name. e.g., "newyork"
+            - Must be a string that corresponds to a legitimate craigslist city
+            - See : http://geo.craigslist.org/iso/us
+        area : string
+            - e.g., "brk" for Brooklyn or "nch" for north chicagoland
+            - may need to pull this out of the url after querying
+        minprice: string
+            - e.g., "500"
+            - The minimum value of the list price in the returned results
+        maxprice: string
+            - e.g., "1200"
+            - The maximum value of the list price in the returned results
+        category: string
+            -"hhh" for housing
+            -"bar" for barter
+            -"mis" for missed conn]ctions
+        bedrooms: string
+            -"hhh" for housing
+            -"bar" for barter
+            -"mis" for missed connections
+        pic: boolean
+            -Requires that the post has a picture
+        '''
+        # Check to see if database exists
+        if os.path.isfile(query_file) & os.path.isfile(email_file):
+            #Read in the query_file
+            query_list=read_csv(query_file)
+
+            #Check if there are already any observations for the same query
+            original = query_list[query_list.search_term == search_term & \
+                    query_list.city == city & query_list.area == area
+                    & query_list.minprice == minprice & query_list.maxprice == maxprice \
+                    & query_list.category == category & query_list.bedrooms == bedrooms\
+                    & query_list.pic == pic]
+
+            #if the 'original' dataframe is empty, add a new row to the database
+            if original.empty:
+                #find the max of the query_id
+                new_id = max(query_list.id) + 1
+
+                newquery=DataFrame({'id':new_id,'search_term':search_term, \
+                    'city':city,'area':area, \
+                    'minprice':minprice,'maxprice':maxprice, 'category':category, \
+                    'bedrooms':bedrooms,'pic':pic})
+
+                newquery.to_csv(query_file, mode = 'a',header=False, index=False)
+
+            else:
+                new_id = original['query_id'][0]
+
+            #Read in the query_file
+            email_list=read_csv(email_file)
+            #Check if there are already any observations for the same query
+            original_email = email_list[email_list.query_id == new_id & \
+                    email_list.email == email]
+
+            #If there is not already a row for the query ID /email combo,
+            #do nothing
+            if original_email.empty:
+                newemail=DataFrame({'query_id':new_id,'email':email})
+                newemail.to_csv(email_file, mode = 'a',header=False, index=False)
+
+        elif  os.path.isfile(query_file) and not os.path.isfile(email_file):
+            print ("You must specify both a query and email file that exist.\n \
+                    Database not updated.")
+
+        elif  not os.path.isfile(query_file) and os.path.isfile(email_file):
+            print ("You must specify both a query and email file that exist.\n \
+                    Database not updated.")
+        else:
+            newquery=DataFrame({'id':1,'search_term':search_term, \
+                'city':city,'area':area, \
+                'minprice':minprice,'maxprice':maxprice, 'category':category, \
+                'bedrooms':bedrooms,'pic':pic})
+
+            newquery.to_csv(query_file, header=True, index=False)
+
+            newemail=DataFrame({'query_id':id,'email':email})
+            newemail.to_csv(email_file, header=True, index=False)
+
+
+
+
+
     def load_query_terms(self,query_file,header=True):
         '''
         load in query parameters and store as pandas dataframe
-        
+
         Parameters
         ----------
         query_file : string
@@ -36,21 +137,21 @@ class cl_updater(object):
             -columns are ID, location and search term
         header : bool
             -assume that query_file has header for columns
-
+)
         '''
         if header:
             query_list=read_csv(query_file)
         else:
             query_list=read_csv(query_file,header=None)
         self.query_list = query_list
-        
+
     def load_email_list(self,email_file,header=True):
         '''
         load in query parameters and store as pandas dataframe
-        
+
         Parameters
         ----------
-        query_file : string
+        email_file : string
             -Matrix of query parameters
             -columns are ID, location and search term
         header : bool
@@ -62,11 +163,11 @@ class cl_updater(object):
         else:
             email_list=read_csv(email_file,header=None)
         self.email_list = email_list
-        
-        
+
+
     def update_database(self,data_path,query_id,cl_info):
         '''
-            Create a 'results' table with 
+            Create a 'results' table with
                 1) duplicates removed
                 2) a 'date_pulled' with the earliest date result was returned
 
@@ -74,10 +175,10 @@ class cl_updater(object):
             ----------
             data_path : string
                 - Path to folder where .csv data files are stored
-            query_id : integer 
-                - Unique ID for query+location combination 
-            cl_info : Pandas dataframe 
-                - Contains craigslist information from html search results 
+            query_id : integer
+                - Unique ID for query+location combination
+            cl_info : Pandas dataframe
+                - Contains craigslist information from html search results
         '''
 
         ###################################################
@@ -139,7 +240,7 @@ class cl_updater(object):
         else:
             unique_total = unique
         unique_total.to_csv(unique_search_history,index=False)
-        
+
 
     def build_emails(self,data_path,query,query_id):
         '''
@@ -151,8 +252,8 @@ class cl_updater(object):
                 - Path to folder where .csv data files are stored
             query : string
                 - Search term for craigslist
-            query_id : integer 
-                - Unique ID for query+location combination 
+            query_id : integer
+                - Unique ID for query+location combination
         '''
 
         #Get the date
@@ -177,7 +278,7 @@ class cl_updater(object):
             <head>
             </head>
             <body>
-            <p>Sorry, there are no new search results for 
+            <p>Sorry, there are no new search results for
             """
 
             quote_query = '"%s"' % query
@@ -205,7 +306,7 @@ class cl_updater(object):
             <head>
             </head>
             <body>
-            <p>Here are your new search results for 
+            <p>Here are your new search results for
             """
 
             quote_query = '"%s"' % query
@@ -247,15 +348,15 @@ class cl_updater(object):
             ----------
             data_path : string
                 - Path to folder where .csv data files are stored
-            query_id : integer 
-                - Unique ID for query+location combination 
+            query_id : integer
+                - Unique ID for query+location combination
         '''
         server = 'smtp.gmail.com:587'
 
         # Send the message via local SMTP server.
         s = smtplib.SMTP(server)
-        s.starttls()  
-        s.login(from_email,password) 
+        s.starttls()
+        s.login(from_email,password)
         # sendmail function takes 3 arguments: sender's address, recipient's address
         # and message to send - here it is sent as one string.
         s.sendmail(from_email, to_email, email_message)
