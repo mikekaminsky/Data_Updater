@@ -25,7 +25,7 @@ class cl_updater(object):
         Initialize a new instance of cl_data_cleaner
     '''
 
-    def add_new_query(self, query_file, email_file,email, search_term,
+    def add_new_query(self, query_file, email_file,email, search_term, city,
                       area="", minprice="", maxprice="", category="sss", \
                       pic=False, bedrooms=""):
 
@@ -68,14 +68,21 @@ class cl_updater(object):
         # Check to see if database exists
         if os.path.isfile(query_file) & os.path.isfile(email_file):
             #Read in the query_file
-            query_list=read_csv(query_file)
+            query_list=read_csv(query_file,na_filter = False)
+
+            query_list.bedrooms = query_list['bedrooms'].apply(str)
+            query_list.minprice = query_list['minprice'].apply(str)
+            query_list.maxprice = query_list['maxprice'].apply(str)
 
             #Check if there are already any observations for the same query
-            original = query_list[query_list.search_term == search_term & \
-                    query_list.city == city & query_list.area == area
-                    & query_list.minprice == minprice & query_list.maxprice == maxprice \
-                    & query_list.category == category & query_list.bedrooms == bedrooms\
-                    & query_list.pic == pic]
+            original = query_list[query_list.search_term == search_term and \
+                    query_list.city == city and query_list.area == area \
+                    and query_list.minprice == minprice \
+                    and query_list.maxprice == maxprice \
+                    and query_list.category == category and query_list.bedrooms == bedrooms\
+                     and query_list.pic == pic]
+
+
 
             #if the 'original' dataframe is empty, add a new row to the database
             if original.empty:
@@ -85,23 +92,23 @@ class cl_updater(object):
                 newquery=DataFrame({'id':new_id,'search_term':search_term, \
                     'city':city,'area':area, \
                     'minprice':minprice,'maxprice':maxprice, 'category':category, \
-                    'bedrooms':bedrooms,'pic':pic})
+                    'bedrooms':bedrooms,'pic':pic}, index = [0])
 
                 newquery.to_csv(query_file, mode = 'a',header=False, index=False)
 
             else:
-                new_id = original['query_id'][0]
+                new_id = original['id'][0]
 
             #Read in the query_file
             email_list=read_csv(email_file)
             #Check if there are already any observations for the same query
-            original_email = email_list[email_list.query_id == new_id & \
+            original_email = email_list[email_list.query_id == new_id and \
                     email_list.email == email]
 
             #If there is not already a row for the query ID /email combo,
             #do nothing
             if original_email.empty:
-                newemail=DataFrame({'query_id':new_id,'email':email})
+                newemail=DataFrame({'query_id':new_id,'email':email}, index = [0])
                 newemail.to_csv(email_file, mode = 'a',header=False, index=False)
 
         elif  os.path.isfile(query_file) and not os.path.isfile(email_file):
@@ -115,16 +122,12 @@ class cl_updater(object):
             newquery=DataFrame({'id':1,'search_term':search_term, \
                 'city':city,'area':area, \
                 'minprice':minprice,'maxprice':maxprice, 'category':category, \
-                'bedrooms':bedrooms,'pic':pic})
+                'bedrooms':bedrooms,'pic':pic}, index = [0])
 
             newquery.to_csv(query_file, header=True, index=False)
 
-            newemail=DataFrame({'query_id':id,'email':email})
+            newemail=DataFrame({'query_id':1,'email':email}, index = [0])
             newemail.to_csv(email_file, header=True, index=False)
-
-
-
-
 
     def load_query_terms(self,query_file,header=True):
         '''
