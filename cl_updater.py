@@ -26,7 +26,7 @@ class cl_updater(object):
     '''
 
     def add_new_query(self, query_file, email_file,email, search_term, city,
-                      area="", minprice="", maxprice="", category="sss", \
+                      area="", minprice="", maxprice="", category="sss", 
                       pic=False, bedrooms=""):
 
         '''
@@ -75,14 +75,15 @@ class cl_updater(object):
             query_list.maxprice = query_list['maxprice'].apply(str)
 
             #Check if there are already any observations for the same query
-            original = query_list[query_list.search_term == search_term and \
-                    query_list.city == city and query_list.area == area \
-                    and query_list.minprice == minprice \
-                    and query_list.maxprice == maxprice \
-                    and query_list.category == category and query_list.bedrooms == bedrooms\
-                     and query_list.pic == pic]
-
-
+            original = query_list[
+                    (query_list.search_term == search_term) & \
+                    (query_list.city == city) & \
+                    (query_list.area == area) & \
+                    (query_list.minprice == minprice) & \
+                    (query_list.maxprice == maxprice) & \
+                    (query_list.category == category) & \
+                    (query_list.bedrooms == bedrooms) & \
+                    (query_list.pic == pic)]
 
             #if the 'original' dataframe is empty, add a new row to the database
             if original.empty:
@@ -97,13 +98,13 @@ class cl_updater(object):
                 newquery.to_csv(query_file, mode = 'a',header=False, index=False)
 
             else:
-                new_id = original['id'][0]
+                new_id = original['id'][1]
 
             #Read in the query_file
             email_list=read_csv(email_file)
             #Check if there are already any observations for the same query
-            original_email = email_list[email_list.query_id == new_id and \
-                    email_list.email == email]
+            original_email = email_list[(email_list.query_id == new_id) & \
+                    (email_list.email == email)]
 
             #If there is not already a row for the query ID /email combo,
             #do nothing
@@ -119,6 +120,7 @@ class cl_updater(object):
             print ("You must specify both a query and email file that exist.\n \
                     Database not updated.")
         else:
+
             newquery=DataFrame({'id':1,'search_term':search_term, \
                 'city':city,'area':area, \
                 'minprice':minprice,'maxprice':maxprice, 'category':category, \
@@ -139,13 +141,19 @@ class cl_updater(object):
             -Matrix of query parameters
             -columns are ID, location and search term
         header : bool
-            -assume that query_file has header for columns
-)
+            -assume that query_file has header for column
+
         '''
         if header:
-            query_list=read_csv(query_file)
+            query_list=read_csv(query_file,na_filter = False)
         else:
-            query_list=read_csv(query_file,header=None)
+            query_list=read_csv(query_file,na_filter = False,header=None)
+
+
+        query_list.bedrooms = query_list['bedrooms'].apply(str)
+        query_list.minprice = query_list['minprice'].apply(str)
+        query_list.maxprice = query_list['maxprice'].apply(str)
+
         self.query_list = query_list
 
     def load_email_list(self,email_file,header=True):
@@ -202,7 +210,7 @@ class cl_updater(object):
         #Add to raw history -- simply stacking all the results found with every search
         #################################
 
-        cl_info.to_csv(raw_search_history, mode = 'a',header=True, index=False)
+        cl_info.to_csv(raw_search_history, mode = 'a',header=True, index=False,encoding = "utf-8")
 
         #################################
         #Add to unique search history
@@ -242,7 +250,7 @@ class cl_updater(object):
             unique_total = concat([unique,other_unique],axis=0)
         else:
             unique_total = unique
-        unique_total.to_csv(unique_search_history,index=False)
+        unique_total.to_csv(unique_search_history,index=False,encoding = "utf-8")
 
 
     def build_emails(self,data_path,query,query_id):
@@ -364,17 +372,4 @@ class cl_updater(object):
         # and message to send - here it is sent as one string.
         s.sendmail(from_email, to_email, email_message)
         s.quit()
-
-
-
-
-
-
-
-
-
-
-
-
-
 
