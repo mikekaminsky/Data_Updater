@@ -17,6 +17,8 @@ How to Use
 2. Download the [Craigslist Updater](https://github.com/mikekaminsky/craigslist_updater)
 3. Initiate your database as shown below:
 
+
+
     from cl_scraper import cl_scraper
 
     cu_object = cl_updater()
@@ -27,7 +29,12 @@ How to Use
                           pic=False, bedrooms="")
 
 
+
+
 4. Execute the scraper and updater for every line in the query database.
+
+
+
 
     cu_object.load_query_terms(query_file=query_info)
     cu_object.load_email_list(email_file = email_info)
