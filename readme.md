@@ -16,7 +16,6 @@ How to Use
 1. Download the [Craigslist Scraper](https://github.com/mikekaminsky/craigslist_scraper)
 2. Download the [Craigslist Updater](https://github.com/mikekaminsky/craigslist_updater)
 3. Initiate your database as shown below:
-
 ```python
 from cl_scraper import cl_scraper
 
@@ -26,6 +25,13 @@ cu_object = cl_updater()
 cu_object.add_new_query(self, "path/to/query/file", "path/to/email/file",test@test.com, "whozits", newyork,
                       area="", minprice="", maxprice="", category="sss", 
                       pic=False, bedrooms="")
+
+```
+
+4. Execute the scraper and updater for every line in the query database.
+
+```python
+
 
 cu_object.load_query_terms(query_file=query_info)
 cu_object.load_email_list(email_file = email_info)
