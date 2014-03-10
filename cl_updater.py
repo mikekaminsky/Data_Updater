@@ -26,7 +26,7 @@ class cl_updater(object):
     '''
 
     def add_new_query(self, query_file, email_file,email, search_term, city,
-                      area="", minprice="", maxprice="", category="sss", 
+                      area="", minprice="", maxprice="", category="sss",
                       pic=False, bedrooms=""):
 
         '''
@@ -98,7 +98,7 @@ class cl_updater(object):
                 newquery.to_csv(query_file, mode = 'a',header=False, index=False)
 
             else:
-                new_id = original['id'][1]
+                new_id = original['id'].irow(0)
 
             #Read in the query_file
             email_list=read_csv(email_file)
@@ -219,7 +219,7 @@ class cl_updater(object):
         #if unique_search_history table exists,
         #read unique search history
         if os.path.isfile(unique_search_history):
-            all_unique = read_csv(unique_search_history)
+            all_unique = read_csv(unique_search_history,encoding = "utf-8")
             query_unique = all_unique[all_unique.query_id == query_id]
             other_unique = all_unique[all_unique.query_id != query_id]
             #Append current results to unique history
@@ -277,8 +277,6 @@ class cl_updater(object):
         #post today.
         #################################
         unique_search_history = data_path + "unique_search_history.csv"
-
-
         all_unique = read_csv(unique_search_history)
         todays_results = all_unique[(all_unique.query_id == query_id) & (all_unique.date_ran == today)]
 
