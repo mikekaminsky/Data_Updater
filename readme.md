@@ -23,10 +23,9 @@ How to Use
     cu_object = cl_updater()
 
 
-    cu_object.add_new_query(self, "path/to/query/file", "path/to/email/file",test@test.com, "whozits", newyork,
-                          area="", minprice="", maxprice="", category="sss", 
-                          pic=False, bedrooms="")
-
+    cu_object.add_new_query("path/to/query/file.csv", "path/to/email/file.csv",test@test.com, 
+                            "whozits", newyork, area="", minprice="", maxprice="", category="sss", 
+                            pic=False, bedrooms="")
     ```
 
 
