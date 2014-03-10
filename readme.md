@@ -33,7 +33,7 @@ How to Use
 4. Execute the scraper and updater for every line in the query database.
 
 
-
+    ```
 
     cu_object.load_query_terms(query_file=query_info)
     cu_object.load_email_list(email_file = email_info)
@@ -77,4 +77,4 @@ How to Use
          for index2, row2 in to_emails.iterrows():
             to_email=row2['email']
             cu_object.send_emails(email_message = email_message ,from_email = my_email ,to_email = to_email ,password = password)
-
+    ```
