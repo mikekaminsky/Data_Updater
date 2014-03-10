@@ -17,18 +17,17 @@ How to Use
 2. Download the [Craigslist Updater](https://github.com/mikekaminsky/craigslist_updater)
 3. Initiate your database as shown below:
 
+    ```
+        from cl_scraper import cl_scraper
 
-```
-    from cl_scraper import cl_scraper
-
-    cu_object = cl_updater()
+        cu_object = cl_updater()
 
 
-    cu_object.add_new_query(self, "path/to/query/file", "path/to/email/file",test@test.com, "whozits", newyork,
-                          area="", minprice="", maxprice="", category="sss", 
-                          pic=False, bedrooms="")
+        cu_object.add_new_query(self, "path/to/query/file", "path/to/email/file",test@test.com, "whozits", newyork,
+                              area="", minprice="", maxprice="", category="sss", 
+                              pic=False, bedrooms="")
 
-```
+    ```
 
 
 4. Execute the scraper and updater for every line in the query database.
