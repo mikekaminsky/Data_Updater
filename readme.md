@@ -18,7 +18,7 @@ How to Use
 3. Initiate your database as shown below:
 
 
-
+```
     from cl_scraper import cl_scraper
 
     cu_object = cl_updater()
@@ -28,7 +28,7 @@ How to Use
                           area="", minprice="", maxprice="", category="sss", 
                           pic=False, bedrooms="")
 
-
+```
 
 
 4. Execute the scraper and updater for every line in the query database.
