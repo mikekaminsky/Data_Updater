@@ -5,10 +5,9 @@ to send emails with updates about new craigslist postings.
 '''
 
 my_email = 'kaminsky.michael@gmail.com'
-#passes = "C:/Users/Michael/Desktop/passwords.txt"
-#fileHandle = open ( passes, 'r' )
-#password = fileHandle.read()
-
+passes = "C:/Users/Michael/Desktop/passwords.txt"
+fileHandle = open ( passes, 'r' )
+password = fileHandle.read()
 import sys
 sys.path.append('C:/Users/Michael/Documents/Code_Projects/Craigslist_Scraper')
 sys.path.append('C:/Users/Michael/Documents/Code_Projects/Craigslist_Updater')
@@ -18,7 +17,7 @@ from cl_scraper import cl_scraper
 #from cl_updater import cl_updater
 execfile("cl_updater.py")
 
-data_path = '/Users/casebook/Mike_Projects/craigslist_updater/data/'
+data_path = 'C:/Users/Michael/Documents/Code_Projects/Craigslist_Updater/data/'
 query_info = data_path + 'query_info.csv'
 email_info = data_path + 'emails.csv'
 
@@ -28,40 +27,36 @@ cu_object = cl_updater()
 
 '''
 Add new lines to the query_info and emails file
-
-'''
+Only needs to be run once (and so is commented out now)
 
 mike_and_jed = {"kaminsky.michael@gmail.com","john.e.dougherty@gmail.com"}
+search_list = {"morgan l", "jefferson l", "bed stuy", "flushing", "east williamsburg", "graham l", "montrose l", "dekalb l"}
+
 
 for jedormike in mike_and_jed:
-    cu_object.add_new_query(query_file = query_info, 
-        email_file = email_info,
-        email = "kaminsky.michael@gmail.com", 
-        search_term = "morgan", city = "newyork",
-        area="brk", minprice="", 
-        maxprice="6000", category="hhh", 
-        pic=False, bedrooms="4")
+    for term in search_list:
+        cu_object.add_new_query(query_file = query_info,
+            email_file = email_info,
+            email = jedormike,
+            search_term = term, city = "newyork",
+            area="brk", minprice="",
+            maxprice="6000", category="hhh",
+            pic=False, bedrooms="4")
 
-
-
-
-'''
-query_file = query_info 
+#FOR TESTING
+query_file = query_info
 email_file = email_info
 email = "kaminsky.michael@gmail.com"
 search_term = "morgan"
 city = "newyork"
 area="brk"
-minprice="" 
+minprice=""
 maxprice="6000"
 category="hhh"
 pic=False
 bedrooms="4"
 
 '''
-
-
-stop()
 
 cu_object.load_query_terms(query_file=query_info)
 print (cu_object.query_list)
@@ -113,9 +108,10 @@ for index, row in cu_object.query_list.iterrows():
      #print cu_object.email_message
 
      #Pull to-emails from the users table based on the query id
-     to_emails = cu_object.email_list[cu_object.email_list .query_id == query_id]
+     to_emails = cu_object.email_list[cu_object.email_list.query_id == query_id]
      #Send email to
      for index2, row2 in to_emails.iterrows():
         to_email=row2['email']
-        cu_object.send_emails(email_message = email_message ,from_email = my_email ,to_email = to_email ,password = password)
+        cu_object.send_emails(email_message = email_message ,from_email = my_email ,to_email = to_email ,
+                password = password)
 
