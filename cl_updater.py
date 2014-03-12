@@ -309,7 +309,7 @@ class cl_updater(object):
             todays_results = todays_results.sort(['date','price_num'], ascending=[0,1])
 
             #Conve to HTML Links
-            links = '<a href ="' + todays_results.url + '">'+ todays_results.date + ' - ' + todays_results.price + ' - ' + todays_results.title +  '</a> <br>'
+            links = '<a href ="' + todays_results.url + '" target="_blank">'+ todays_results.date + ' - ' + todays_results.price + ' - ' + todays_results.title +  '</a> <br>'
             html_link_block = ''.join(links)
 
             header1="""\
